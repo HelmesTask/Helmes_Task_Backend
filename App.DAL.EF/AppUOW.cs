@@ -6,7 +6,7 @@ using Base.DAL.EF;
 
 namespace App.DAL.EF;
 
-public abstract class AppUOW : BaseUnitOfWork<AppDbContext>, IAppUnitOfWork
+public class AppUOW : BaseUnitOfWork<AppDbContext>, IAppUnitOfWork
 {
     private readonly IMapper _mapper;
 

@@ -1,9 +1,5 @@
 ﻿using App.Domain;
-using App.Domain.User;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace App.DAL.EF;
 

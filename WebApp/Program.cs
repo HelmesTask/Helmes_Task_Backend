@@ -1,15 +1,24 @@
+using App.Contracts.DAL;
+using App.DAL.EF;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+builder.Services.AddDbContext<AppDbContext>();
+builder.Services.AddScoped<IAppUnitOfWork, AppUOW>();
+
+
+builder.Services.AddAutoMapper(
+    typeof(App.DAL.EF.AutoMapperProfile),
+    typeof(AutoMapperProfile)
+);
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
