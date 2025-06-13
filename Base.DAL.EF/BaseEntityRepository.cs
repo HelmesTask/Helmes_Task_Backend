@@ -4,22 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Base.DAL.EF;
 
-public class BaseEntityRepository<TDomainEntity, TDalEntity, TDbContext> :
-    BaseEntityRepository<Guid, TDomainEntity, TDalEntity, TDbContext>, IEntityRepository<TDalEntity>
-    where TDomainEntity : class, IDomainEntityId
-    where TDalEntity : class, IDomainEntityId
-    where TDbContext : DbContext
-{
-    public BaseEntityRepository(TDbContext dbContext, IDalMapper<TDomainEntity, TDalEntity> mapper) : base(dbContext,
-        mapper)
-    {
-    }
-
-
-}
-
-public class BaseEntityRepository<TKey, TDomainEntity, TDalEntity, TDbContext>
-    where TKey : IEquatable<TKey>
+public class BaseEntityRepository<TDomainEntity, TDalEntity, TDbContext>
     where TDomainEntity : class, IDomainEntityId
     where TDalEntity : class, IDomainEntityId
     where TDbContext : DbContext
@@ -35,4 +20,37 @@ public class BaseEntityRepository<TKey, TDomainEntity, TDalEntity, TDbContext>
         RepoDbSet = RepoDbContext.Set<TDomainEntity>();
         Mapper = mapper;
     }
+
+    public virtual IQueryable CreateQuery(Guid sessionId, bool noTracking = true)
+    {
+        var query = RepoDbSet.AsQueryable()
+            .Where(e => ((IDomainAppUserSessionId)e).SessionId == sessionId);
+
+        //readonly
+        if (noTracking)
+        {
+            query = query.AsNoTracking();
+        }
+
+        return query;
+    }
+
+    public Task<IEnumerable<TDalEntity>> GetAllAsync(bool noTracking = true)
+    {
+        throw new NotImplementedException();
+    }
+    
+
+    public TDalEntity Update(TDalEntity entity)
+    {
+        var entityToUpdate = RepoDbSet.Find(entity.Id);
+        if (entityToUpdate != null)
+        {
+            RepoDbContext.Entry(entityToUpdate).CurrentValues.SetValues(entity);
+            RepoDbSet.Update(entityToUpdate);
+        }
+
+        return Mapper.Map(entityToUpdate)!;    
+    }
+    
 }
