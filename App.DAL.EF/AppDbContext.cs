@@ -11,7 +11,7 @@ namespace App.DAL.EF;
 public class AppDbContext : DbContext 
 {
     public DbSet<Sector> Sectors { get; set; } = default!;
-    public AppDbContext(DbContextOptions options) : base(options)
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
         
     }

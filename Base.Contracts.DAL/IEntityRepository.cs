@@ -7,8 +7,10 @@ public interface IEntityRepository<TEntity>: IEntityRepository<TEntity, Guid>
 {
 }
 
-public interface IEntityRepository<TEntity, TKey>
+public interface IEntityRepository<TEntity,TKey>
     where TEntity : class, IDomainEntityId<TKey>
     where TKey : IEquatable<TKey>
 {
+    Task<IEnumerable<TEntity>> GetAllAsync(bool noTracking = true);
+    TEntity Update(TEntity entity);
 }
