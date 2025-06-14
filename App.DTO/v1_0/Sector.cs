@@ -1,8 +1,8 @@
 using Base.Contracts.Domain;
 
-namespace App.DAL.DTO;
+namespace App.DTO.v1_0;
 
-public class  Sector : IDomainEntityId
+public class Sector
 {
     public Guid Id { get; set; }
     public Guid? ParentSectorId { get; set; }

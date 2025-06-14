@@ -35,9 +35,17 @@ public class BaseEntityRepository<TDomainEntity, TDalEntity, TDbContext>
         return query;
     }
 
-    public Task<IEnumerable<TDalEntity>> GetAllAsync(bool noTracking = true)
+    public async Task<IEnumerable<TDalEntity>> GetAllAsync(bool noTracking = true)
     {
-        throw new NotImplementedException();
+        var query = RepoDbSet.AsQueryable();
+
+        if (noTracking)
+        {
+            query = query.AsNoTracking();
+        }
+
+        var entities = await query.ToListAsync();
+        return entities.Select(e => Mapper.Map(e)!);
     }
     
 

@@ -8,14 +8,24 @@
 
     <ItemGroup>
       <ProjectReference Include="..\App.DAL.EF\App.DAL.EF.csproj" />
+      <ProjectReference Include="..\App.DTO\App.DTO.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.20">
+        <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="6.4.0" />
+        <PackageReference Include="AutoMapper" Version="13.0.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.20" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.20"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.20" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.20">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.10" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
     </ItemGroup>
-
+    <PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
 </Project>
