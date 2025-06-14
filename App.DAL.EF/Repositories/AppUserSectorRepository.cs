@@ -1,3 +1,4 @@
+using System.Collections;
 using App.Contracts.DAL.Repositories;
 using App.DAL.EF;
 using AutoMapper;
@@ -15,10 +16,17 @@ public class AppUserSectorRepository : BaseEntityRepository<APPDomain.AppUserSec
     {
     }
 
-    public async Task<IEnumerable<Guid>> GetAllAppUserSectionsAsync(Guid sessionId, bool noTracking = true)
+    public async Task<IEnumerable<Guid>> GetAllAppUserSectionIdsAsync(Guid sessionId)
     {
-        var query = CreateQuery(sessionId, noTracking);
+        var query = CreateQuery(sessionId);
         var res = await query.Select(e => e.SectorId).ToListAsync();
         return res;
     }
+
+    public async void RemoveExistingAppUserSectors(List<Guid> appUserSectorIdList,Guid userId)
+    {
+        // var query = CreateQuery(sessionId);
+        // var entity = query.FirstOrDefault(e => e.Id.Equals(id));
+        
+    } 
 }

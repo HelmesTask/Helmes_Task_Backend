@@ -5,5 +5,5 @@ namespace App.Contracts.DAL.Repositories;
 
 public interface ISectorRepository : IEntityRepository<DALDTO.Sector>
 {
-    Task<IEnumerable<DALDTO.Sector>> GetAllSectionsAsync(bool noTracking = true);
+    Task<IEnumerable<DALDTO.Sector>> GetAllSectionsAsync();
 }
