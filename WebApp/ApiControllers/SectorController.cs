@@ -1,11 +1,13 @@
 using System.Net;
 using App.Contracts.DAL;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 
 
 namespace WebApp.ApiControllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class SectorController : ControllerBase
     {
