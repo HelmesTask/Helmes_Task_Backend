@@ -17,7 +17,6 @@ public class AppUOW : BaseUnitOfWork<AppDbContext>, IAppUnitOfWork
     }
 
     private IAppUserRepository? _appUserRepository;
-    
     public IAppUserRepository AppUserRepository =>
         _appUserRepository ??= new AppUserRepository(UowDbContext, _mapper);
 
@@ -25,4 +24,8 @@ public class AppUOW : BaseUnitOfWork<AppDbContext>, IAppUnitOfWork
     
     public ISectorRepository SectorRepository =>
         _sectorRepository ??= new SectorRepository(UowDbContext, _mapper);
+    
+    private IAppUserSectorRepository? _appUserSectorRepository;
+    public IAppUserSectorRepository AppUserSectorRepository =>
+        _appUserSectorRepository ??= new AppUserSectorRepository(UowDbContext, _mapper);
 }
