@@ -2,6 +2,7 @@ using App.Contracts.DAL.Repositories;
 using App.DAL.EF;
 using AutoMapper;
 using Base.DAL.EF;
+using Microsoft.EntityFrameworkCore;
 using APPDomain = App.Domain.User;
 using DALDTO = App.DAL.DTO;
 
@@ -14,8 +15,10 @@ public class AppUserSectorRepository : BaseEntityRepository<APPDomain.AppUserSec
     {
     }
 
-    public Task<IEnumerable<Guid>> GetAllAppUserSectionsAsync(Guid userId, bool noTracking = true)
+    public async Task<IEnumerable<Guid>> GetAllAppUserSectionsAsync(Guid sessionId, bool noTracking = true)
     {
-        throw new NotImplementedException();
+        var query = CreateQuery(sessionId, noTracking);
+        var res = await query.Select(e => e.SectorId).ToListAsync();
+        return res;
     }
 }

@@ -13,9 +13,16 @@ public class AppUserRepository : BaseEntityRepository<APPDomain.AppUser, DALDTO.
     {
     }
 
-
-    public Task<IEnumerable<Guid>> GetUserSectionsAsync(Guid userId, bool noTracking = true)
+    public async Task<DALDTO.AppUser?> GetUserBySessionIdAsync(Guid sessionId, bool noTracking = true)
     {
-        throw new NotImplementedException();
+        var query = CreateQuery(sessionId, noTracking);
+        var user = await query.Select(e => Mapper.Map(e)!).FirstOrDefaultAsync();
+
+        if (user == null)
+        {
+            return null;
+        }
+
+        return user;
     }
 }

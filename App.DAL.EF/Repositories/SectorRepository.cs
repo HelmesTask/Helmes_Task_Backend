@@ -12,10 +12,10 @@ public class SectorRepository : BaseEntityRepository<APPDomain.Sector ,DALDTO.Se
     public SectorRepository(AppDbContext dbContext, IMapper mapper) : base(dbContext, new DalDomainMapper<APPDomain.Sector, DALDTO.Sector>(mapper))
     {
     }
-    
+
 
     public Task<IEnumerable<DALDTO.Sector>> GetAllSectionsAsync(bool noTracking = true)
     {
-        throw new NotImplementedException();
+        return GetAllAsync(noTracking);
     }
 }

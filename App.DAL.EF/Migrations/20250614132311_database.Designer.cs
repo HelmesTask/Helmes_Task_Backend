@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace App.DAL.EF.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250614090437_database")]
+    [Migration("20250614132311_database")]
     partial class database
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

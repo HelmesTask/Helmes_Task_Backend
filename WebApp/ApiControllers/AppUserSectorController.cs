@@ -26,9 +26,33 @@ public class AppUserSectorController : ControllerBase
     [ProducesResponseType(typeof(List<App.DTO.v1_0.Sector>), (int)HttpStatusCode.OK)]
     [Produces("application/json")]
     [Consumes("application/json")]
-    public async Task<ActionResult<List<App.DTO.v1_0.Sector>>> GetAppUserSectors(Guid sessionId)
+    public async Task<ActionResult<List<Guid>>> GetAppUserSectors(Guid sessionId)
     {
-        var sectors = _uow.AppUserSectorRepository.GetAllAppUserSectionsAsync(sessionId);
+        var sectorIds = await _uow.AppUserSectorRepository.GetAllAppUserSectionsAsync(sessionId);
+        
+        return Ok(sectorIds);
+    }
+    
+    [HttpPut("PutAppUserSectors/{sessionId}")]
+    [ProducesResponseType((int) HttpStatusCode.NoContent)]
+    [ProducesResponseType((int) HttpStatusCode.BadRequest)]
+    [ProducesResponseType((int) HttpStatusCode.NotFound)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]    
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    public async Task<ActionResult> PutAppUserSectors(List<Guid> sectorIdList)
+    {
+        foreach (var sector in sectorIdList)
+        {
+            //check is sector is guid
+            if (sector == Guid.Empty)
+            {
+                return BadRequest("Invalid sector ID provided.");
+            }
+
+            
+        }
+        
         return Ok();
     }
 

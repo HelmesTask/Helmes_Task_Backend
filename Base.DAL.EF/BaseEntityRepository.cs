@@ -21,10 +21,15 @@ public class BaseEntityRepository<TDomainEntity, TDalEntity, TDbContext>
         Mapper = mapper;
     }
 
-    public virtual IQueryable CreateQuery(Guid sessionId, bool noTracking = true)
+    public virtual IQueryable<TDomainEntity> CreateQuery(Guid sessionId, bool noTracking = true)
     {
-        var query = RepoDbSet.AsQueryable()
-            .Where(e => ((IDomainAppUserSessionId)e).SessionId == sessionId);
+        var query = RepoDbSet.AsQueryable();
+        if (sessionId != Guid.Empty)
+        {
+            query = query           
+                .Where(e => ((IDomainAppUserSessionId)e).SessionId == sessionId);
+
+        }
 
         //readonly
         if (noTracking)

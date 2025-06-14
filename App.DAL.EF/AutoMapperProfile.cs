@@ -10,6 +10,5 @@ public class AutoMapperProfile : Profile
         CreateMap<APPDomain.User.AppUser, DALDTO.AppUser>().ReverseMap();
         CreateMap<APPDomain.Sector, DALDTO.Sector>().ReverseMap();
         CreateMap<APPDomain.User.AppUserSector, DALDTO.AppUserSector>().ReverseMap();
-
     }
 }
