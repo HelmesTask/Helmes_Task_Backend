@@ -16,7 +16,7 @@ public class SectorRepository : BaseEntityRepository<APPDomain.Sector ,DALDTO.Se
 
     public Task<IEnumerable<DALDTO.Sector>> GetAllSectionsAsync()
     {
-        return GetAllAsync();
+        return GetAllEntitiesAsync();
     }
 
 

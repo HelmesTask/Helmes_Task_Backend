@@ -1,5 +1,6 @@
 using App.Contracts.DAL.Repositories;
 using AutoMapper;
+using Base.Contracts.Domain;
 using Base.DAL.EF;
 using Microsoft.EntityFrameworkCore;
 using APPDomain = App.Domain.User;
@@ -15,16 +16,15 @@ public class AppUserRepository : BaseEntityRepository<APPDomain.AppUser, DALDTO.
 
     public async Task<DALDTO.AppUser?> GetUserBySessionIdAsync(Guid sessionId)
     {
-        var query = CreateQuery(sessionId);
-        
-        
-        var user = await query.Select(e => Mapper.Map(e)!).FirstOrDefaultAsync();
-        
+        var user = await RepoDbSet
+            .Where(e => e.SessionId == sessionId) 
+            .FirstOrDefaultAsync();
+
         if (user == null)
         {
             return null;
         }
-        
-        return user;
+
+        return Mapper.Map(user);
     }
 }

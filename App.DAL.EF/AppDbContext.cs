@@ -1,4 +1,5 @@
 ﻿using App.Domain;
+using App.Domain.User;
 using Microsoft.EntityFrameworkCore;
 
 namespace App.DAL.EF;
@@ -7,6 +8,8 @@ namespace App.DAL.EF;
 public class AppDbContext : DbContext 
 {
     public DbSet<Sector> Sectors { get; set; } = default!;
+    public DbSet<AppUserSector> AppUserSectors { get; set; } = default!;
+    public DbSet<AppUser> AppUsers { get; set; } = default!;
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
         

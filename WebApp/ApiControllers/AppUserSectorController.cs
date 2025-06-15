@@ -1,10 +1,12 @@
 using System.Net;
 using App.Contracts.DAL;
-using App.DAL.DTO;
+using App.DTO.v1_0;
 using Asp.Versioning;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.Helpers;
+using AppUser = App.DAL.DTO.AppUser;
+using AppUserSector = App.DAL.DTO.AppUserSector;
 
 namespace WebApp.ApiControllers;
 
@@ -32,9 +34,25 @@ public class AppUserSectorController : ControllerBase
     [Consumes("application/json")]
     public async Task<ActionResult<List<Guid>>> GetAppUserSectors(Guid sessionId)
     {
-        var sectorIds = (await _uow.AppUserSectorRepository.GetAllAppUserSectionIdsAsync(sessionId)).ToList();
+        AppUser? appUser = await _uow.AppUserRepository.GetUserBySessionIdAsync(sessionId);
+        if(appUser == null)
+        {
+            return NotFound($"User with session ID {sessionId} not found.");
+        }
+
+        var sectorIds = (await _uow.AppUserSectorRepository.GetAllAppUserSectionIdsAsync(appUser.Id)).ToList();
         
         return Ok(sectorIds);
+    }
+    
+    [HttpGet("GetAppUserSectors")]
+    [ProducesResponseType(typeof(List<App.DTO.v1_0.AppUserSector>), (int)HttpStatusCode.OK)]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    public async Task<ActionResult<List<Guid>>> GetAllAppUserSectors()
+    {
+        var sectors = (await _uow.AppUserSectorRepository.GetAllEntitiesAsync(true)).ToList();
+        return Ok(sectors);
     }
     
     
@@ -52,7 +70,7 @@ public class AppUserSectorController : ControllerBase
         {
             return NotFound($"User with session ID {sessionId} not found.");
         } 
-        List<Guid> existingSectors = (await _uow.AppUserSectorRepository.GetAllAppUserSectionIdsAsync(sessionId)).ToList();
+        List<Guid> existingSectors = (await _uow.AppUserSectorRepository.GetAllAppUserSectionIdsAsync(appUser.Id)).ToList();
         foreach (var sectorId in sectorIdList)
         {
             if (sectorId == Guid.Empty)
@@ -64,9 +82,9 @@ public class AppUserSectorController : ControllerBase
                 existingSectors.Remove(sectorId);
                 continue;
             }
-            if (_uow.SectorRepository.Exists(sectorId))
+            if (await _uow.SectorRepository.Exists(sectorId))
             {
-                App.DAL.DTO.AppUserSector appUserSector = new App.DAL.DTO.AppUserSector
+                AppUserSector appUserSector = new AppUserSector
                 {
                     AppUserId = appUser.Id,
                     SectorId = sectorId
@@ -78,35 +96,39 @@ public class AppUserSectorController : ControllerBase
                 return NotFound($"Sector with ID {sectorId} not found.");
             }
         }
-        _uow.AppUserSectorRepository.RemoveExistingAppUserSectors(existingSectors, appUser.Id);
+        await _uow.AppUserSectorRepository.RemoveExistingAppUserSectors(existingSectors, appUser.Id);
         
         await _uow.SaveChangesAsync();
         return NoContent();
     }
     
-    [HttpPost("PostAppUserSectors/{sessionId}")]
-    [ProducesResponseType(typeof(List<Guid>),(int)HttpStatusCode.OK)]
-    [ProducesResponseType((int)HttpStatusCode.Created)]
-    [ProducesResponseType((int)HttpStatusCode.Conflict)]
+    [HttpPost("PostAppUserSectors")]
+    [ProducesResponseType(typeof(List<Guid>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Created)] 
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
     [Produces("application/json")]
     [Consumes("application/json")]
-    public async Task<ActionResult> PostAppUserSectors(List<Guid> sectorIdList, App.DTO.v1_0.AppUser newUser, Guid sessionId)
+    public async Task<ActionResult> PostAppUserSectors(PostAppUserSectorsRequest postRequest)
     {
-        newUser.Id = Guid.NewGuid();
-        App.DAL.DTO.AppUser mappedUser = _userMapper.Map(newUser)!;
-        foreach (var sectorId in sectorIdList)
+        App.DTO.v1_0.AppUser newUser = postRequest.User;
+        List<Guid> sectorIdList = postRequest.SectorIdsList;
+        
+        AppUser mappedUser = _userMapper.Map(newUser)!;
+        mappedUser.Id = Guid.NewGuid();
+        foreach (var sectorId in sectorIdList.ToList())
         {
             if (sectorId == Guid.Empty)
             {
                 return BadRequest("Invalid sector ID provided.");
             }
             
-            if (_uow.SectorRepository.Exists(sectorId))
+            if (await _uow.SectorRepository.Exists(sectorId))
             {
                 App.DAL.DTO.AppUserSector appUserSector = new App.DAL.DTO.AppUserSector
                 {
                     Id = Guid.NewGuid(),
-                    AppUserId = mappedUser!.Id,
+                    AppUserId = mappedUser.Id,
                     SectorId = sectorId
                 };
                 _uow.AppUserSectorRepository.Add(appUserSector);
@@ -119,8 +141,6 @@ public class AppUserSectorController : ControllerBase
         }
         _uow.AppUserRepository.Add(mappedUser);
         await _uow.SaveChangesAsync();
-
-        
         return NoContent();
     }
     

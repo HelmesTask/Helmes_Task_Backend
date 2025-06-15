@@ -28,7 +28,7 @@ public class SectorController : ControllerBase
     [Consumes("application/json")]
     public async Task<ActionResult<List<App.DTO.v1_0.Sector>>> GetSectors()
     {
-        var sectors = (await _uow.SectorRepository.GetAllAsync(true)).ToList();
+        var sectors = (await _uow.SectorRepository.GetAllEntitiesAsync(true)).ToList();
         return Ok(sectors);
     }
 

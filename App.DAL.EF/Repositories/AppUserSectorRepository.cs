@@ -16,17 +16,41 @@ public class AppUserSectorRepository : BaseEntityRepository<APPDomain.AppUserSec
     {
     }
 
-    public async Task<IEnumerable<Guid>> GetAllAppUserSectionIdsAsync(Guid sessionId)
+    
+    private IQueryable<APPDomain.AppUserSector> CreateAppUserQuery(Guid? userId = default,bool noTracking = true)
     {
-        var query = CreateQuery(sessionId);
-        var res = await query.Select(e => e.SectorId).ToListAsync();
+        var query = RepoDbSet.AsQueryable();
+        if (userId != Guid.Empty)
+        {
+            query = query.Where(e => e.AppUserId == userId);
+
+        }
+
+        if (noTracking)
+        {
+            query = query.AsNoTracking();
+        }
+
+        return query;
+    }
+    public async Task<IEnumerable<Guid>> GetAllAppUserSectionIdsAsync(Guid userId)
+    {
+        var query = CreateAppUserQuery(userId);
+        var res = await query
+            .Select(e => e.SectorId)
+            .ToListAsync();
         return res;
     }
 
-    public async void RemoveExistingAppUserSectors(List<Guid> appUserSectorIdList,Guid userId)
+    public async Task RemoveExistingAppUserSectors(List<Guid> appUserSectorIdList, Guid userId)
     {
-        // var query = CreateQuery(sessionId);
-        // var entity = query.FirstOrDefault(e => e.Id.Equals(id));
-        
-    } 
+        var query = CreateAppUserQuery(userId, false);
+        var sectorsToRemove = await query
+            .Where(e => appUserSectorIdList.Contains(e.SectorId))
+            .ToListAsync();
+        if (sectorsToRemove.Any())
+        {
+            RepoDbSet.RemoveRange(sectorsToRemove);
+        }
+    }
 }
