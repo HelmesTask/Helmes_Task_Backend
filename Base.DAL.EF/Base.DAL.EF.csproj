@@ -9,10 +9,11 @@
     <ItemGroup>
       <ProjectReference Include="..\Base.Contracts.DAL\Base.Contracts.DAL.csproj" />
       <ProjectReference Include="..\Base.Contracts.Domain\Base.Contracts.Domain.csproj" />
+      <ProjectReference Include="..\Base.Domain\Base.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.32" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.20" />
     </ItemGroup>
 
 </Project>

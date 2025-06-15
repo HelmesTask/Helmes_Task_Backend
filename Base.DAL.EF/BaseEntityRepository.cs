@@ -1,5 +1,6 @@
 ﻿using Base.Contracts.DAL;
 using Base.Contracts.Domain;
+using Base.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Base.DAL.EF;
@@ -14,34 +15,28 @@ public class BaseEntityRepository<TDomainEntity, TDalEntity, TDbContext>
     protected readonly DbSet<TDomainEntity> RepoDbSet;
     protected readonly IDalMapper<TDomainEntity, TDalEntity> Mapper;
 
-    public BaseEntityRepository(TDbContext dbContext, IDalMapper<TDomainEntity, TDalEntity> mapper)
+    protected BaseEntityRepository(TDbContext dbContext, IDalMapper<TDomainEntity, TDalEntity> mapper)
     {
         RepoDbContext = dbContext;
         RepoDbSet = RepoDbContext.Set<TDomainEntity>();
         Mapper = mapper;
     }
-
-    public virtual IQueryable CreateQuery(Guid sessionId, bool noTracking = true)
+    
+    public virtual async Task<IEnumerable<TDalEntity>> GetAllEntitiesAsync(bool noTracking = true)
     {
-        var query = RepoDbSet.AsQueryable()
-            .Where(e => ((IDomainAppUserSessionId)e).SessionId == sessionId);
+        var query = RepoDbSet.AsQueryable();
 
-        //readonly
         if (noTracking)
         {
             query = query.AsNoTracking();
         }
 
-        return query;
-    }
-
-    public Task<IEnumerable<TDalEntity>> GetAllAsync(bool noTracking = true)
-    {
-        throw new NotImplementedException();
+        var entities = await query.ToListAsync();
+        return entities.Select(e => Mapper.Map(e)!);
     }
     
 
-    public TDalEntity Update(TDalEntity entity)
+    public virtual TDalEntity Update(TDalEntity entity)
     {
         var entityToUpdate = RepoDbSet.Find(entity.Id);
         if (entityToUpdate != null)
@@ -50,7 +45,17 @@ public class BaseEntityRepository<TDomainEntity, TDalEntity, TDbContext>
             RepoDbSet.Update(entityToUpdate);
         }
 
-        return Mapper.Map(entityToUpdate)!;    
+        return Mapper.Map(entityToUpdate)!;
+        
     }
+    public virtual TDalEntity Add(TDalEntity entity)
+    {
+        return Mapper.Map(RepoDbSet.Add(Mapper.Map(entity)!).Entity)!;
+    }
+    public virtual async Task<bool> Exists(Guid id)
+    {
+        return await RepoDbSet.AnyAsync(e => e.Id == id);
+    }
+    
     
 }

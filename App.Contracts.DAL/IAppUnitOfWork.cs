@@ -7,4 +7,6 @@ public interface IAppUnitOfWork : IUnitOfWork
 {
     IAppUserRepository AppUserRepository { get; }
     ISectorRepository SectorRepository { get; }
+    IAppUserSectorRepository AppUserSectorRepository { get; }
+
 }

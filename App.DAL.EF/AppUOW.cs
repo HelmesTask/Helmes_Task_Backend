@@ -6,23 +6,26 @@ using Base.DAL.EF;
 
 namespace App.DAL.EF;
 
-public abstract class AppUOW : BaseUnitOfWork<AppDbContext>, IAppUnitOfWork
+public class AppUOW : BaseUnitOfWork<AppDbContext>, IAppUnitOfWork
 {
     private readonly IMapper _mapper;
 
-    protected AppUOW(AppDbContext dbContext, IMapper mapper) : base(dbContext)
+    public AppUOW(AppDbContext dbContext, IMapper mapper) : base(dbContext)
     {
         _mapper = mapper;
 
     }
 
     private IAppUserRepository? _appUserRepository;
-    
     public IAppUserRepository AppUserRepository =>
-        _appUserRepository ?? new AppUserRepository(UowDbContext, _mapper);
+        _appUserRepository ??= new AppUserRepository(UowDbContext, _mapper);
 
     private ISectorRepository? _sectorRepository;
     
     public ISectorRepository SectorRepository =>
-        _sectorRepository ?? new SectorRepository(UowDbContext, _mapper);
+        _sectorRepository ??= new SectorRepository(UowDbContext, _mapper);
+    
+    private IAppUserSectorRepository? _appUserSectorRepository;
+    public IAppUserSectorRepository AppUserSectorRepository =>
+        _appUserSectorRepository ??= new AppUserSectorRepository(UowDbContext, _mapper);
 }

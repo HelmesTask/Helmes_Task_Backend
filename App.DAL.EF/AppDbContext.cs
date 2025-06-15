@@ -1,9 +1,6 @@
 ﻿using App.Domain;
 using App.Domain.User;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace App.DAL.EF;
 
@@ -11,6 +8,8 @@ namespace App.DAL.EF;
 public class AppDbContext : DbContext 
 {
     public DbSet<Sector> Sectors { get; set; } = default!;
+    public DbSet<AppUserSector> AppUserSectors { get; set; } = default!;
+    public DbSet<AppUser> AppUsers { get; set; } = default!;
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
         
@@ -20,6 +19,7 @@ public class AppDbContext : DbContext
     {
         foreach (var entity in ChangeTracker.Entries().Where(e => e.State != EntityState.Deleted))
         {
+
             foreach (var prop in entity
                          .Properties
                          .Where(x => x.Metadata.ClrType == typeof(DateTime)))

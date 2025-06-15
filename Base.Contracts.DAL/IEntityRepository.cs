@@ -11,6 +11,8 @@ public interface IEntityRepository<TEntity,TKey>
     where TEntity : class, IDomainEntityId<TKey>
     where TKey : IEquatable<TKey>
 {
-    Task<IEnumerable<TEntity>> GetAllAsync(bool noTracking = true);
+    Task<IEnumerable<TEntity>> GetAllEntitiesAsync(bool noTracking = true);
     TEntity Update(TEntity entity);
+    TEntity Add(TEntity entity);
+    Task<bool> Exists(Guid id);
 }

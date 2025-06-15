@@ -13,8 +13,12 @@ public class SectorRepository : BaseEntityRepository<APPDomain.Sector ,DALDTO.Se
     {
     }
 
-    public Task<IEnumerable<DALDTO.AppUser>> GetAllSectionsAsync(Guid userId, bool noTracking = true)
+
+    public Task<IEnumerable<DALDTO.Sector>> GetAllSectionsAsync()
     {
-        throw new NotImplementedException();
+        return GetAllEntitiesAsync();
     }
+
+
+    
 }
