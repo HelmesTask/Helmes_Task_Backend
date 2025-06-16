@@ -44,6 +44,9 @@ builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwa
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+ 
+SetupAppData(app);
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -79,4 +82,18 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+
 app.Run();
+
+static void SetupAppData(WebApplication app)
+{
+    using var serviceScope = ((IApplicationBuilder)app).ApplicationServices
+        .GetRequiredService<IServiceScopeFactory>()
+        .CreateScope();
+    using var context = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    if (!context.Database.ProviderName!.Contains("InMemory"))
+    {
+        context.Database.Migrate();
+    }
+}
