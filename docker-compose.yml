@@ -1,13 +1,31 @@
 services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: sqlserver
+    container_name: sqlserver-container
     environment:
       ACCEPT_EULA: "Y"
       MSSQL_SA_PASSWORD: "Str0ngP@ssw0rd!"
     ports:
-      - "1433:1433"
+      - 1433:1433
     volumes:
       - sqlserverdata:/var/opt/mssql
+  app:
+    build: ./
+    container_name: HelmesTask-app-container
+    ports:
+      - 7134:80
+    restart: on-failure
+    logging:
+      options:
+        max-size: 10m
+        max-file: 3
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=MyAppDb;User Id=sa;Password=Str0ngP@ssw0rd!"
+    depends_on:
+      - sqlserver
+    deploy:
+      resources:
+        limits:
+          memory: 1g      
 volumes:
   sqlserverdata:
