@@ -31,6 +31,7 @@ public class AppUserSectorController : ControllerBase
     
     [HttpGet("GetAppUser/{sessionId}")]
     [ProducesResponseType(typeof(App.DTO.v1_0.AppUser), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int) HttpStatusCode.NotFound)]
     [Produces("application/json")]
     [Consumes("application/json")]
     public async Task<ActionResult<App.DTO.v1_0.AppUser>> GetAppUserBySessionId(Guid sessionId)
@@ -73,10 +74,7 @@ public class AppUserSectorController : ControllerBase
     
     [HttpPut("PutAppUserSectors/{sessionId}")]
     [ProducesResponseType(typeof(List<Guid>), (int)HttpStatusCode.OK)]
-    [ProducesResponseType((int) HttpStatusCode.NoContent)]
-    [ProducesResponseType((int) HttpStatusCode.BadRequest)]
     [ProducesResponseType((int) HttpStatusCode.NotFound)]
-    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]    
     [Produces("application/json")]
     [Consumes("application/json")]
     public async Task<ActionResult<List<Guid>>> PutAppUserSectors(Guid sessionId, [FromBody] List<Guid> sectorIdList)
@@ -124,7 +122,7 @@ public class AppUserSectorController : ControllerBase
     
     [HttpPost("PostAppUserSectors")]
     [ProducesResponseType(typeof(List<Guid>), (int)HttpStatusCode.OK)]
-    [ProducesResponseType((int)HttpStatusCode.Created)] 
+    [ProducesResponseType((int) HttpStatusCode.NoContent)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
     [Produces("application/json")]

@@ -35,8 +35,7 @@ public class SectorController : ControllerBase
 
     [HttpPut("PutSector/{id}")]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType((int)HttpStatusCode.NoContent)]
     [Produces("application/json")]
     [Consumes("application/json")]
     public async Task<ActionResult> PutSectors(Guid id, App.DTO.v1_0.Sector sector)
@@ -56,92 +55,3 @@ public class SectorController : ControllerBase
     }
 }
 
-
-// // GET: api/Sector/5
-// [HttpGet("{id}")]
-// public async Task<ActionResult<Sector>> GetSector(Guid id)
-// {
-//   if (_context.Sectors == null)
-//   {
-//       return NotFound();
-//   }
-//     var sector = await _context.Sectors.FindAsync(id);
-//
-//     if (sector == null)
-//     {
-//         return NotFound();
-//     }
-//
-//     return sector;
-// }
-//
-// // PUT: api/Sector/5
-// // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-// [HttpPut("{id}")]
-// public async Task<IActionResult> PutSector(Guid id, Sector sector)
-// {
-//     if (id != sector.Id)
-//     {
-//         return BadRequest();
-//     }
-//
-//     _context.Entry(sector).State = EntityState.Modified;
-//
-//     try
-//     {
-//         await _context.SaveChangesAsync();
-//     }
-//     catch (DbUpdateConcurrencyException)
-//     {
-//         if (!SectorExists(id))
-//         {
-//             return NotFound();
-//         }
-//         else
-//         {
-//             throw;
-//         }
-//     }
-//
-//     return NoContent();
-// }
-//
-// // POST: api/Sector
-// // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-// [HttpPost]
-// public async Task<ActionResult<Sector>> PostSector(Sector sector)
-// {
-//   if (_context.Sectors == null)
-//   {
-//       return Problem("Entity set 'AppDbContext.Sectors'  is null.");
-//   }
-//     _context.Sectors.Add(sector);
-//     await _context.SaveChangesAsync();
-//
-//     return CreatedAtAction("GetSector", new { id = sector.Id }, sector);
-// }
-//
-// // DELETE: api/Sector/5
-// [HttpDelete("{id}")]
-// public async Task<IActionResult> DeleteSector(Guid id)
-// {
-//     if (_context.Sectors == null)
-//     {
-//         return NotFound();
-//     }
-//     var sector = await _context.Sectors.FindAsync(id);
-//     if (sector == null)
-//     {
-//         return NotFound();
-//     }
-//
-//     _context.Sectors.Remove(sector);
-//     await _context.SaveChangesAsync();
-//
-//     return NoContent();
-// }
-//
-// private bool SectorExists(Guid id)
-// {
-//     return (_context.Sectors?.Any(e => e.Id == id)).GetValueOrDefault();
-// }
