@@ -17,6 +17,15 @@ builder.Services.AddScoped<IAppUnitOfWork, AppUOW>();
 
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsAllowAll", policy =>
+    {
+        policy.AllowAnyHeader();
+        policy.AllowAnyMethod();
+        policy.AllowAnyOrigin();
+    });
+});
 builder.Services.AddAutoMapper(
     typeof(App.DAL.EF.AutoMapperProfile),
     typeof(AutoMapperProfile) 
@@ -60,6 +69,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseCors("CorsAllowAll");
 
 app.UseAuthorization();
 

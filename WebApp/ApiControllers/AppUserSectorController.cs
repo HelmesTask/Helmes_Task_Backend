@@ -28,6 +28,21 @@ public class AppUserSectorController : ControllerBase
         _userMapper = new PublicDTOBllMapper<App.DTO.v1_0.AppUser, App.DAL.DTO.AppUser>(autoMapper);
     }
     
+    
+    [HttpGet("GetAppUser/{sessionId}")]
+    [ProducesResponseType(typeof(App.DTO.v1_0.AppUser), (int)HttpStatusCode.OK)]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    public async Task<ActionResult<App.DTO.v1_0.AppUser>> GetAppUserBySessionId(Guid sessionId)
+    {
+        AppUser? appUser = await _uow.AppUserRepository.GetUserBySessionIdAsync(sessionId);
+        if(appUser == null)
+        {
+            return NotFound($"User with session ID {sessionId} not found.");
+        }
+        return Ok(_userMapper.Map(appUser));
+    }
+    
     [HttpGet("GetAppUserSectors/{sessionId}")]
     [ProducesResponseType(typeof(List<Guid>), (int)HttpStatusCode.OK)]
     [Produces("application/json")]
@@ -57,13 +72,14 @@ public class AppUserSectorController : ControllerBase
     
     
     [HttpPut("PutAppUserSectors/{sessionId}")]
+    [ProducesResponseType(typeof(List<Guid>), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int) HttpStatusCode.NoContent)]
     [ProducesResponseType((int) HttpStatusCode.BadRequest)]
     [ProducesResponseType((int) HttpStatusCode.NotFound)]
     [ProducesResponseType((int)HttpStatusCode.Unauthorized)]    
     [Produces("application/json")]
     [Consumes("application/json")]
-    public async Task<ActionResult> PutAppUserSectors(List<Guid> sectorIdList, Guid sessionId)
+    public async Task<ActionResult<List<Guid>>> PutAppUserSectors(Guid sessionId, [FromBody] List<Guid> sectorIdList)
     {
         AppUser? appUser = await _uow.AppUserRepository.GetUserBySessionIdAsync(sessionId);
         if (appUser == null)
@@ -71,11 +87,13 @@ public class AppUserSectorController : ControllerBase
             return NotFound($"User with session ID {sessionId} not found.");
         } 
         List<Guid> existingSectors = (await _uow.AppUserSectorRepository.GetAllAppUserSectionIdsAsync(appUser.Id)).ToList();
-        foreach (var sectorId in sectorIdList)
+        foreach (var sectorId in sectorIdList.ToList())
         {
             if (sectorId == Guid.Empty)
             {
-                return BadRequest("Invalid sector ID provided.");
+                //remove sectorId from the list if it's invalid
+                sectorIdList.Remove(sectorId);
+                //return BadRequest("Invalid sector ID provided.");
             }
             if (existingSectors.Contains(sectorId))
             {
@@ -93,13 +111,15 @@ public class AppUserSectorController : ControllerBase
             }
             else
             {
-                return NotFound($"Sector with ID {sectorId} not found.");
+                sectorIdList.Remove(sectorId);
+                //return NotFound($"Sector with ID {sectorId} not found.");
             }
         }
         await _uow.AppUserSectorRepository.RemoveExistingAppUserSectors(existingSectors, appUser.Id);
         
         await _uow.SaveChangesAsync();
-        return NoContent();
+        return Ok(sectorIdList);
+        
     }
     
     [HttpPost("PostAppUserSectors")]
@@ -120,7 +140,8 @@ public class AppUserSectorController : ControllerBase
         {
             if (sectorId == Guid.Empty)
             {
-                return BadRequest("Invalid sector ID provided.");
+                sectorIdList.Remove(sectorId);
+                //return BadRequest("Invalid sector ID provided.");
             }
             
             if (await _uow.SectorRepository.Exists(sectorId))
