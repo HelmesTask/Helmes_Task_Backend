@@ -41,6 +41,8 @@ public class AppUserSectorController : ControllerBase
         {
             return NotFound($"User with session ID {sessionId} not found.");
         }
+
+        appUser.Id = Guid.Empty;
         return Ok(_userMapper.Map(appUser));
     }
     
@@ -122,12 +124,11 @@ public class AppUserSectorController : ControllerBase
     
     [HttpPost("PostAppUserSectors")]
     [ProducesResponseType(typeof(List<Guid>), (int)HttpStatusCode.OK)]
-    [ProducesResponseType((int) HttpStatusCode.NoContent)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
     [Produces("application/json")]
     [Consumes("application/json")]
-    public async Task<ActionResult> PostAppUserSectors(PostAppUserSectorsRequest postRequest)
+    public async Task<ActionResult<List<Guid>>> PostAppUserSectors(PostAppUserSectorsRequest postRequest)
     {
         App.DTO.v1_0.AppUser newUser = postRequest.User;
         List<Guid> sectorIdList = postRequest.SectorIdsList;
@@ -160,7 +161,8 @@ public class AppUserSectorController : ControllerBase
         }
         _uow.AppUserRepository.Add(mappedUser);
         await _uow.SaveChangesAsync();
-        return NoContent();
+        return Ok(sectorIdList);
+
     }
     
     

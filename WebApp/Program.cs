@@ -54,7 +54,6 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
  
-SetupAppData(app);
 
 
 // Configure the HTTP request pipeline.
@@ -95,15 +94,9 @@ app.MapControllerRoute(
 
 app.Run();
 
-static void SetupAppData(WebApplication app)
-{
-    using var serviceScope = ((IApplicationBuilder)app).ApplicationServices
-        .GetRequiredService<IServiceScopeFactory>()
-        .CreateScope();
-    using var context = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    if (!context.Database.ProviderName!.Contains("InMemory"))
-    {
-        context.Database.Migrate();
-    }
+// needed for unit testing, to change generated top level statement class to public
+public partial class Program
+{
+    
 }
