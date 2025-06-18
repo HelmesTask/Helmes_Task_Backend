@@ -8,6 +8,7 @@ COPY App.DAL.DTO/*.csproj ./App.DAL.DTO/
 COPY App.DAL.EF/*.csproj ./App.DAL.EF/
 COPY App.DTO/*.csproj ./App.DTO/
 COPY App.Domain/*.csproj ./App.Domain/
+COPY App.Test/*.csproj ./App.Test/
 
 COPY Base.Contracts.DAL/*.csproj ./Base.Contracts.DAL/
 COPY Base.Contracts.Domain/*.csproj ./Base.Contracts.Domain/
@@ -23,6 +24,7 @@ COPY App.DAL.DTO/. ./App.DAL.DTO/
 COPY App.DAL.EF/. ./App.DAL.EF/
 COPY App.DTO/. ./App.DTO/
 COPY App.Domain/. ./App.Domain/
+COPY App.Test/. ./App.Test/
 
 
 COPY Base.Contracts.DAL/. ./Base.Contracts.DAL/
