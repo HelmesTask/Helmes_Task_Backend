@@ -1,6 +1,5 @@
 using App.Contracts.DAL.Repositories;
 using AutoMapper;
-using Base.Contracts.Domain;
 using Base.DAL.EF;
 using Microsoft.EntityFrameworkCore;
 using APPDomain = App.Domain.User;

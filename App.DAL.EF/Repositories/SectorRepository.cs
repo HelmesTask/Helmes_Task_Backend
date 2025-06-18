@@ -1,6 +1,5 @@
 using App.Contracts.DAL.Repositories;
 using AutoMapper;
-using Base.Contracts.DAL;
 using Base.DAL.EF;
 using APPDomain = App.Domain;
 using DALDTO = App.DAL.DTO;
