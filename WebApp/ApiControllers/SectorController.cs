@@ -31,6 +31,27 @@ public class SectorController : ControllerBase
         var sectors = (await _uow.SectorRepository.GetAllEntitiesAsync(true)).ToList();
         return Ok(sectors);
     }
+    [HttpPost("PostSector")]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType((int)HttpStatusCode.Created)]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    public async Task<ActionResult> PostSector(App.DTO.v1_0.Sector sector)
+    {
+        if (sector == null)
+        {
+            return BadRequest("Invalid sector data provided.");
+        }
+
+        sector.Id = Guid.NewGuid();
+        
+        _uow.SectorRepository.Add(_mapper.Map(sector)!);
+
+        await _uow.SaveChangesAsync();
+
+        return StatusCode((int)HttpStatusCode.Created);
+    }
+    
 
 
     [HttpPut("PutSector/{id}")]

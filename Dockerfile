@@ -33,12 +33,14 @@ COPY Base.Domain/. ./Base.Domain/
 
 COPY WebApp/. ./WebApp/
 
+
+RUN dotnet test App.Test
+
+
 WORKDIR /app/WebApp
 RUN dotnet publish -c Release -o out
 
-#tests
 
-#new image from build
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
 WORKDIR /app
 EXPOSE 8000
